@@ -1,0 +1,65 @@
+#!/bin/bash
+TGTD="/mnt/koji/mash/"
+ACTD="${TGTD}$1-current/"
+TMPD="${TGTD}$1-temp/"
+MASHD="/etc/mash/"
+
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+	echo "Usage: auto-regen [koji tag]"
+	echo "Example: auto-regen centos6-rutgers-testing"
+	exit 0
+fi
+
+if [[ $EUID -ne 0 ]]; then
+	echo "This script must be run as root" 1>&2
+	exit 1
+fi
+
+if [[ ! -f "$MASHD$1.mash" ]]; then
+	echo "There is no mash file for that repo"
+	exit 1
+fi
+
+# From Koji Set-up Guide: Kojira may need to be restarted when new tags are
+# added in order to detect those tags correctly.
+echo "Restarting kojira"
+service kojira restart
+
+if [[ -d "$TMPD" ]]; then
+	echo "Deleteing old temp repository"
+	rm -r $TMPD
+fi
+
+if [[ -d "$TGTD$1" ]]; then
+	echo "Deleteing bad repository"
+	rm -r $TGTD$1
+fi
+
+echo "Commence the mashing!"
+
+mash -o $TGTD $1
+
+if [[ "$?" != "0" ]]; then
+	echo "Mash failed to generate the repo"
+	echo "Deleteing bad repository"
+	rm -r ${TGTD}$1
+	exit 1
+fi
+
+echo "Mash successfully generated the repository"
+
+echo "Switching repo directory names"
+
+if [[ -d "$ACTD" ]]; then
+	mv $ACTD $TMPD
+fi
+
+mv $TGTD$1 $ACTD
+
+if [[ "$?" != "0" ]]; then
+	echo "FAILED TO SWITCH REPO NAMES: PLEASE FIX MANUALLY"
+	exit 1
+fi
+
+echo "Successfully regenerated repo!"
+exit 0
