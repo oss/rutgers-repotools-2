@@ -6,11 +6,11 @@ TGTD="/mnt/koji/mash"
 
 def main(options, args):
     if options.verbose:
-        logger.basicConfig(format="[%(levelname)] %(message)", 
+        logging.basicConfig(format="[%(levelname)] %(message)", 
                            level=logging.DEUG)
-        logger.debug("Showing verbose output")
+        logging.debug("Showing verbose output")
     else:
-        logger.basicConfig(format="[%(levelname)] %(message)",
+        logging.basicConfig(format="[%(levelname)] %(message)",
                         level=logging.INFO) 
 
     repo = args[0]
@@ -50,12 +50,12 @@ if __name__ == "__main__":
     parser = OptionParser()
     
     parser.add_option("--nomail", default=True,
-                      action="store_false", dest="send_mail"
+                      action="store_false", dest="send_mail",
                       help="do not send email notifications")
-    parser.add_option("-v", "--verbose", default=False
+    parser.add_option("-v", "--verbose", default=False,
                       action="store_true", dest="verbose",
                       help="show verbose output")
-    parser.add_option("-q", "--quiet", default=True
+    parser.add_option("-q", "--quiet", default=True,
                       action="store_false", dest="show_output",
                       help="don't show output (will show errors)")
     parser.add_option("-d", "--directory", default=False,
