@@ -6,11 +6,11 @@ TGTD="/mnt/koji/mash"
 
 def main(options, args):
     if options.verbose:
-        logging.basicConfig(format="[%(levelname)] %(message)", 
+        logging.basicConfig(format="[%(levelname)s] %(message)s", 
                            level=logging.DEUG)
         logging.debug("Showing verbose output")
     else:
-        logging.basicConfig(format="[%(levelname)] %(message)",
+        logging.basicConfig(format="[%(levelname)s] %(message)s",
                         level=logging.INFO) 
 
     repo = args[0]
@@ -47,7 +47,7 @@ def depcheck_directory(path):
 
 
 if __name__ == "__main__":
-    parser = OptionParser()
+    parser = OptionParser(usage="usage: %prog [options] argument")
     
     parser.add_option("--nomail", default=True,
                       action="store_false", dest="send_mail",
@@ -63,4 +63,8 @@ if __name__ == "__main__":
                       help="argument is a directory, not the name of a repo")
 
     (options, args) = parser.parse_args()
-    main(options, args)
+
+    if len(args) == 0:
+        print "Missing required argument"
+    else:
+        main(options, args)
