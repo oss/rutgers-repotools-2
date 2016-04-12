@@ -1,6 +1,6 @@
 Rutgers Repository Tools (v2)
 ========================
-(NOTE: THIS IS CURRENTLY BETAi; THIS README CURRENTLY HAS SOME INACCURATE
+(NOTE: THIS IS CURRENTLY BETA; THIS README CURRENTLY HAS SOME INACCURATE
 INFORMATION AS THE REWRITE IS NOT YET COMPLETE)
 
 Rutgers Repository Tools is a set of tools used by Open System Solutions on
@@ -69,37 +69,32 @@ script will ignore. By default, the list is installed at `/etc/depcheck.ignore`.
 However, it's best to avoid using exceptions and fix the broken dependencies
 properly. 
 
-### repocheck
+### repocheck (do we need this?)
 Does sanity checks on the repositories for a given distribution version. More
 specifically, it checks to make sure that there are no packages newer in stable
 than in testing (and, optionally, newer in testing than in unstable).
 
-### populate-rpmfind-db
-Updates or rebuilds from scratch the RPM database. This information is then used
-by rpm2python to display repository and package information in the Rutgers web
-interface.
-
-Note that rebuilding from scratch assumes the existence of a running Koji server.
-
-### rebuild-repos
-This script can recreate all of the publish repositories from scratch. This uses
-the Koji API to get the latest packages from a specific tag/repository. Then,
-this creates symlinks from Koji's packages directory into a temporary directory.
-Finally, this then creates repository metadata in the temporary directory. The
-new repository is then transfered from the temporary location into the actual
-repository.
+### rebuild-repo (Implemented)
+This script will regenerate the published repository for a specific koji tag. 
+First, this uses mash to create the repo for a koji tag into a temporary 
+directory (the directory is the same name as the koji tag it is making the repo for. 
+Then, asssuming mash succeeded, the old repository is renamed to "\<tag\>-test" and 
+the newly generated repository is remaned "\<tag\>-current". If for whatever reason
+the newly generated repo is bad, you can just use the old one. The "\<tag\>-temp" 
+repository gets deleted after each successful run of mash.
+This script is used by pullpackage and pushpackage.
 
 For more information about where these directories are located, see the
 configuration file.
 
-### rpmdb-backup
+### rpmdb-backup (Implemented)
 This is a simple rotating backup script for the rpmfind database. The location
 of the backups and the total number of backups to keep should be specified on
 the command line; however, the cron job pulls this information from the config
 file and runs it automatically. You can run it by hand if you know what you're
 doing!
 
-### koji-backup
+### koji-backup (Implemented)
 This dumps the PostgreSQL Koji database and saves it as a backup. Like the
 rpmdb-backup script, it takes its arguments from the command line, but the cron
 job automatically uses information from the configuration file by default.
@@ -111,7 +106,7 @@ Fedora's spam-o-matic from the mash project. You can find them at
 http://pkgs.fedoraproject.org/cgit/mash.git/.
 
 The rest was written by Alexander Pavel and Derek Maciel of Rutgers University 
-Open System Solutions.
+Open System Solutions, or adapted from the original repotools suite.
 
 License
 =======
