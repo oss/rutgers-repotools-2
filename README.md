@@ -110,5 +110,5 @@ Open System Solutions, or adapted from the original repotools suite.
 
 License
 =======
-This software is licensed under the GNU General Public License. See LICENSE
+This software is licensed under the GNU General Public License v3. See LICENSE
 for more info.
