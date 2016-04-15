@@ -56,7 +56,7 @@ def depcheck_directory(path):
 def generate_config(path):
     """Returns the path to a temp file of the yum config for RepoClosure
     for the given path. The file must be deleted once done with it"""
-    (file, path) = tempfile.mkstemp()
+    (file_desc, path) = tempfile.mkstemp()
     contents = """[main]
 debuglevel=2
 logfile=/var/log/yum.log
@@ -86,8 +86,8 @@ baseurl=file:///army/centos/centos/6/extras/x86_64/
 name=CentOS rutgers Tree
 baseurl=file:///army/rpmprivate/centos/rutgers/rutgers/6/x86_64/
 """
-    file.write(contents)
-    file.close()
+    os.write(file_desc, contents)
+    os.close(file_desc)
     return path
 
 if __name__ == "__main__":
