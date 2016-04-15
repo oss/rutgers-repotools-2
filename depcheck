@@ -4,6 +4,7 @@ from optparse import OptionParser
 import logging
 import os
 from repoutils import repoclosure
+import tempfile
 
 MASHD="/etc/mash"
 TGTD="/mnt/koji/mash"
