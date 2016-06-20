@@ -48,6 +48,13 @@ fi
 
 echo "Mash successfully generated the repository"
 
+./checkdep.sh $1
+
+if [[ "$?" != "0" ]]; then
+    echo "Exiting due to dependency errors..."
+    exit 1
+fi
+
 echo "Switching repo directory names"
 
 if [[ -d "$ACTD" ]]; then
