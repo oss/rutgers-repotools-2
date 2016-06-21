@@ -1,0 +1,19 @@
+[centos6-rutgers-testing]
+rpm_path = %(arch)s/Packages
+repodata_path = %(arch)s/
+source_path = source/SRPMS
+debuginfo = True
+multilib = False
+multilib_method = devel
+tag = centos6-rutgers-testing
+# Next one is needed to prevent mixing of testing and stable. 
+inherit = False
+# for GPG signed rpm's
+#strict_keys = True
+#keys = bb3b9d78
+arches = i386 x86_64
+delta = False
+hash_packages = False
+# This forces to also create older version of same package; useful if people
+# need older versions or need to revert
+latest = True
