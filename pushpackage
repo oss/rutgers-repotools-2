@@ -12,6 +12,8 @@ if [[ $EUID -ne 0 ]]; then
 	exit 1
 fi
 
+source /etc/rutgers-repotools-2.cfg
+
 if [[ ! -f "$MASHD$1.mash" ]]; then
 	echo "There is no mash file for that repo"
 	exit 1
