@@ -36,6 +36,19 @@ source /etc/rutgers-repotools-2.cfg
 input=$1
 ver=${input//[^0-9]/}
 error=false
+extra_repos=""
+
+if [[ $1 == *"testing"* ]]
+then
+  extra_repos="-l centos$ver-rutgers";
+fi
+
+if [[ $1 == *"unstable"* ]]
+then
+  extra_repos="-l centos$ver-rutgers -l centos$ver-rutgers-testing";
+fi
+
+rm -r /var/tmp/yum-*
 
 echo "Checking Dependencies"
 
@@ -43,19 +56,19 @@ if [[ $ver -lt 7 ]]; then
     if [[ $twoconf = true ]]; then
         repoclosure -t -r $1 --config=$YUMCNF --config=$2 \
             -l base$ver-32 -l updates$ver-32 -l extras$ver-32 \
-            -l base$ver -l updates$ver -l extras$ver > $TMPRPL
+            -l base$ver -l updates$ver -l extras$ver $extra_repos > $TMPRPL
     else
         repoclosure -t -r $1 --config=$YUMCNF \
             -l base$ver-32 -l updates$ver-32 -l extras$ver-32 \
-            -l base$ver -l updates$ver -l extras$ver > $TMPRPL
+            -l base$ver -l updates$ver -l extras$ver $extra_repos > $TMPRPL
     fi
 else
     if [[ $twoconf = true ]]; then
         repoclosure -t -r $1 --config=$YUMCNF --config=$2 \
-            -l base$ver -l updates$ver -l extras$ver > $TMPRPL
+            -l base$ver -l updates$ver -l extras$ver $extra_repos > $TMPRPL
     else
         repoclosure -t -r $1 --config=$YUMCNF \
-            -l base$ver -l updates$ver -l extras$ver > $TMPRPL
+            -l base$ver -l updates$ver -l extras$ver $extra_repos > $TMPRPL
     fi
 fi
 
