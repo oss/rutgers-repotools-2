@@ -1,10 +1,16 @@
 #!/bin/bash
-
-if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-	echo "Usage: rebuild-repo [koji tag]"
-	echo "Example: rebuild-repo centos6-rutgers-testing"
-	exit 0
-fi
+nodep=false
+for var in "$@"
+do
+    if [[ "$var" == "-h" || "$var" == "--help" ]]; then
+	    echo "Usage: rebuild-repo [koji tag]"
+	    echo "Example: rebuild-repo centos6-rutgers-testing"
+	    exit 0
+    fi
+    if [[ "$var" == "-nodep" ]]; then
+        nodep=true
+    fi
+done
 
 if [[ $EUID -ne 0 ]]; then
 	echo "This script must be run as root" 1>&2
@@ -55,20 +61,22 @@ fi
 
 echo "Mash successfully generated the repository"
 
-./depcheck.sh $1 -k
+if [[ $nodep = false ]]; then
+    ./depcheck.sh $1 -k
 
-if [[ "$?" != "0" ]]; then
-    echo "Exiting due to dependency errors..."
+    if [[ "$?" != "0" ]]; then
+        echo "Exiting due to dependency errors..."
+        rm $RDPROB
+        rm $TMPRPL
+        rm $URDEPS
+        rm $LOCK
+        exit 1
+    fi
+
     rm $RDPROB
     rm $TMPRPL
     rm $URDEPS
-    rm $LOCK
-    exit 1
 fi
-
-rm $RDPROB
-rm $TMPRPL
-rm $URDEPS
 
 echo "Switching repo directory names"
 
