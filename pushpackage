@@ -1,5 +1,4 @@
 #!/bin/bash
-REBUILD_REPO_LOCATION="./"
 MASHD="/etc/mash/"
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
@@ -27,9 +26,9 @@ if [[ "$?" != "0" ]]; then
 fi
 
 echo "Called rebuild-repo"
-${REBUILD_REPO_LOCATION}rebuild-repo $1
+./rebuild-repo $1
 if [[ "$?" != "0" ]]; then
-	echo "Auto regen failed!! Untagging packages and exiting..."
+	echo "Rebuild-Repo failed!! Untagging packages and exiting..."
 	koji untag-pkg $1 $2
 	exit 1
 fi

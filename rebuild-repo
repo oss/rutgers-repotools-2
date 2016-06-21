@@ -1,12 +1,8 @@
 #!/bin/bash
-TGTD="/mnt/koji/mash/"
-ACTD="${TGTD}$1-current/"
-TMPD="${TGTD}$1-temp/"
-MASHD="/etc/mash/"
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-	echo "Usage: auto-regen [koji tag]"
-	echo "Example: auto-regen centos6-rutgers-testing"
+	echo "Usage: rebuild-repo [koji tag]"
+	echo "Example: rebuild-repo centos6-rutgers-testing"
 	exit 0
 fi
 
@@ -48,7 +44,7 @@ fi
 
 echo "Mash successfully generated the repository"
 
-./checkdep.sh $1
+./depcheck.sh $1
 
 if [[ "$?" != "0" ]]; then
     echo "Exiting due to dependency errors..."
