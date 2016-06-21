@@ -18,11 +18,19 @@ if [[ ! -f "$MASHD$1.mash" ]]; then
 	exit 1
 fi
 
+if [[ -f "$LOCK" ]]; then
+    echo "Operation on repository alreeady occurring, try again later"
+    exit 1
+fi
+
+touch $LOCK
+
 echo "Untagging packages"
 koji untag-pkg $1 $2
 
 if [[ "$?" != "0" ]]; then
 	echo "Failed to untag packages!"
+    rm $LOCK
 	exit 1
 fi
 
@@ -31,8 +39,11 @@ echo "Called rebuild-repo"
 if [[ "$?" != "0" ]]; then
 	echo "Rebuild-Repo failed!! Retagging package and exiting..."
 	koji tag-pkg $1 $2
+    rm $LOCK
 	exit 1
 fi
+
+rm $LOCK
 
 echo "Successfully pushed package!"
 exit 0

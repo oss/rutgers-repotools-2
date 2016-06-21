@@ -18,6 +18,14 @@ if [[ ! -f "$MASHD$1.mash" ]]; then
 	exit 1
 fi
 
+
+if [[ -f "$LOCK" ]]; then
+    echo "Operation on repository alreeady occurring, try again later"
+    exit 1
+fi
+
+touch $LOCK
+
 # From Koji Set-up Guide: Kojira may need to be restarted when new tags are
 # added in order to detect those tags correctly.
 echo "Restarting kojira"
@@ -41,6 +49,7 @@ if [[ "$?" != "0" ]]; then
 	echo "Mash failed to generate the repo"
 	echo "Deleteing bad repository"
 	rm -r ${TGTD}$1
+    rm $LOCK
 	exit 1
 fi
 
@@ -50,6 +59,7 @@ echo "Mash successfully generated the repository"
 
 if [[ "$?" != "0" ]]; then
     echo "Exiting due to dependency errors..."
+    rm $LOCK
     exit 1
 fi
 
@@ -63,8 +73,11 @@ mv $TGTD$1 $ACTD
 
 if [[ "$?" != "0" ]]; then
 	echo "FAILED TO SWITCH REPO NAMES: PLEASE FIX MANUALLY"
+    rm $LOCK
 	exit 1
 fi
+
+rm $LOCK
 
 echo "Successfully regenerated repo!"
 exit 0
