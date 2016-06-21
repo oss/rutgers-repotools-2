@@ -35,14 +35,26 @@ if [[ "$?" != "0" ]]; then
 fi
 
 echo "Called rebuild-repo"
-./rebuild-repo $1
+./rebuild-repo.sh $1 -nolock -k
 if [[ "$?" != "0" ]]; then
 	echo "Rebuild-Repo failed!! Untagging packages and exiting..."
 	koji untag-pkg $1 $2
+    echo "Sending Mail"
+    echo -e "Pushpackage failed with the following output:\n\nDependency Errors detected:\n$(cat $RDPROB)\n\nOutput from repoclosure:\n$(cat $TMPRPL)" | \
+        mailx -r "roji@koji.rutgers.edu" -s "CentOS Borken Dependencies" "anp120@jla.rutgers.edu"
+    rm $RDPROB
+    rm $TMPRPL
+    rm $URDEPS
     rm $LOCK
 	exit 1
 fi
 
+echo -e "Pushpackage successfully pushed $2 to $1 along with its breakout packages" | \
+    mailx -r "roji@koji.rutgers.edu" -s "CentOS Push Successful - $2" "anp120@jla.rutgers.edu"
+
+rm $RDPROB
+rm $TMPRPL
+rm $URDEPS
 rm $LOCK
 
 echo "Successfully pushed package!"

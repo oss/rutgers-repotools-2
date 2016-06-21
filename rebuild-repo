@@ -1,5 +1,7 @@
 #!/bin/bash
 nodep=false
+nolock=false
+keep=false
 for var in "$@"
 do
     if [[ "$var" == "-h" || "$var" == "--help" ]]; then
@@ -9,6 +11,12 @@ do
     fi
     if [[ "$var" == "-nodep" ]]; then
         nodep=true
+    fi
+    if [[ "$var" == "-nolock" ]]; then
+        nolock=true
+    fi
+    if [[ "$var" == "-k" ]]; then
+        keep=true
     fi
 done
 
@@ -24,13 +32,14 @@ if [[ ! -f "$MASHD$1.mash" ]]; then
 	exit 1
 fi
 
+if [[ $nolock = false ]]; then
+    if [[ -f "$LOCK" ]]; then
+        echo "Operation on repository alreeady occurring, try again later"
+        exit 1
+    fi
 
-if [[ -f "$LOCK" ]]; then
-    echo "Operation on repository alreeady occurring, try again later"
-    exit 1
+    touch $LOCK
 fi
-
-touch $LOCK
 
 # From Koji Set-up Guide: Kojira may need to be restarted when new tags are
 # added in order to detect those tags correctly.
@@ -53,9 +62,9 @@ mash -o $TGTD $1
 
 if [[ "$?" != "0" ]]; then
 	echo "Mash failed to generate the repo"
-	echo "Deleteing bad repository"
-	rm -r ${TGTD}$1
-    rm $LOCK
+    if [[ $nolock = false ]]; then
+        rm $LOCK
+    fi
 	exit 1
 fi
 
@@ -66,16 +75,22 @@ if [[ $nodep = false ]]; then
 
     if [[ "$?" != "0" ]]; then
         echo "Exiting due to dependency errors..."
-        rm $RDPROB
-        rm $TMPRPL
-        rm $URDEPS
-        rm $LOCK
+        if [[ $keep = false  ]]; then
+            rm $RDPROB
+            rm $TMPRPL
+            rm $URDEPS
+        fi
+        if [[ $nolock = false ]]; then
+            rm $LOCK
+        fi
         exit 1
     fi
 
-    rm $RDPROB
-    rm $TMPRPL
-    rm $URDEPS
+    if [[ $keep = false ]]; then
+        rm $RDPROB
+        rm $TMPRPL
+        rm $URDEPS
+    fi
 fi
 
 echo "Switching repo directory names"
@@ -88,11 +103,15 @@ mv $TGTD$1 $ACTD
 
 if [[ "$?" != "0" ]]; then
 	echo "FAILED TO SWITCH REPO NAMES: PLEASE FIX MANUALLY"
-    rm $LOCK
+    if [[ $nolock = false ]]; then
+        rm $LOCK
+    fi
 	exit 1
 fi
 
-rm $LOCK
+if [[ $nolock = false ]]; then
+    rm $LOCK
+fi
 
 echo "Successfully regenerated repo!"
 exit 0
