@@ -55,7 +55,11 @@ fi
 
 echo "Mash successfully generated the repository"
 
-./depcheck.sh $1
+./depcheck.sh $1 -k
+
+rm $RDPROB
+rm $TMPRPL
+rm $URDEPS
 
 if [[ "$?" != "0" ]]; then
     echo "Exiting due to dependency errors..."
