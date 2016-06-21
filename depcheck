@@ -23,23 +23,23 @@ if [[ $ver -lt 7 ]]; then
     if [[ $# -eq 2 ]]; then
         repoclosure -t -r $1 --config=$YUMCNF --config=$2 \
             -l base$ver-32 -l updates$ver-32 -l extras$ver-32 \
-            -l base$ver -l updates$ver -l extras$ver > $TPMRPL
+            -l base$ver -l updates$ver -l extras$ver > $TMPRPL
     else
         repoclosure -t -r $1 --config=$YUMCNF \
             -l base$ver-32 -l updates$ver-32 -l extras$ver-32 \
-            -l base$ver -l updates$ver -l extras$ver > $TPMRPL
+            -l base$ver -l updates$ver -l extras$ver > $TMPRPL
     fi
 else
     if [[ $# -eq 2 ]]; then
         repoclosure -t -r $1 --config=$YUMCNF --config=$2 \
-            -l base$ver -l updates$ver -l extras$ver > $TPMRPL
+            -l base$ver -l updates$ver -l extras$ver > $TMPRPL
     else
         repoclosure -t -r $1 --config=$YUMCNF \
-            -l base$ver -l updates$ver -l extras$ver > $TPMRPL
+            -l base$ver -l updates$ver -l extras$ver > $TMPRPL
     fi
 fi
 
-sed -n '/unresolved\ deps/{:a;n;/package:\ /b;p;ba}' $TPMRPL \
+sed -n '/unresolved\ deps/{:a;n;/package:\ /b;p;ba}' $TMPRPL \
     > $URDEPS
 
 touch $RDPROB
@@ -56,13 +56,13 @@ if [ "$error" = true ]; then
     echo -e "\nDependency errors detected:"
     cat $RDPROB
     echo "\nOutput from repoclosure:"
-    cat $TPMRPL
+    cat $TMPRPL
     echo -e ""
     exit 1
 fi
 
 rm $RDPROB
-rm $TPMRPL
+rm $TMPRPL
 rm $URDEPS
 
 echo "No Dependency errors found"
