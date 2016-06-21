@@ -37,15 +37,23 @@ input=$1
 ver=${input//[^0-9]/}
 error=false
 extra_repos=""
+if [[ $ver -lt 7 ]]; then
+    if [[ $1 == *"testing"* ]]; then
+        extra_repos="-l centos$ver-rutgers-current -l centos$ver-rutgers-current-32";
+    fi
 
-if [[ $1 == *"testing"* ]]
-then
-  extra_repos="-l centos$ver-rutgers";
-fi
+    if [[ $1 == *"unstable"* ]]; then
+        extra_repos="-l centos$ver-rutgers-current -l centos$ver-rutgers-testing-current \
+            -l centos$ver-rutgers-current-32 -l centos$ver-rutgers-testing-current-32";
+    fi
+else
+    if [[ $1 == *"testing"* ]]; then
+        extra_repos="-l centos$ver-rutgers-current";
+    fi
 
-if [[ $1 == *"unstable"* ]]
-then
-  extra_repos="-l centos$ver-rutgers -l centos$ver-rutgers-testing";
+    if [[ $1 == *"unstable"* ]]; then
+        extra_repos="-l centos$ver-rutgers-current -l centos$ver-rutgers-testing-current";
+    fi
 fi
 
 rm -r /var/tmp/yum-*
