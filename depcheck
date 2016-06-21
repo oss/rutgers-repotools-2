@@ -1,14 +1,34 @@
 #!/bin/bash
+keep=false
+twoconf=false
+for var in "$@"
+do
+    if [[ "$var" == "-h" || "$var" == "--help" ]]; then
+        echo "Usage: depcheck repo_name [optional: custom yum.conf]"
+	    echo "Example: depcheck centos7-rutgers-testing-temp"
+        echo "Note: To use -k, add it after the rest otherwise the program will fail"
+	    exit 0
+    fi
+    if [[ "$var" == "-k" ]]; then
+        keep=true
+    fi
+done
 
-if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-    echo "Usage: depcheck repo_name [optional: custom yum.conf]"
-	echo "Example: depcheck centos7-rutgers-testing-temp"
-	exit 0
-fi
-
-if [[ $# -eq 2 && ! -f "$2" ]]; then
+if [[ $keep = false && $# -eq 2 && ! -f "$2" ]]; then
     echo "That file does not exist"
     exit 1
+fi
+
+if [[ $keep = false && $# -eq 2 && -f "$2" ]]; then
+    twoconf=true
+fi
+
+if [[ $keep = true && $# -eq 3 && ! -f "$2" ]]; then
+    echo "That file does not exist"
+    exit 1
+fi
+if [[ $keep = true && $# -eq 3 && -f "$2" ]]; then
+    twoconf=true
 fi
 
 source /etc/rutgers-repotools-2.cfg
@@ -20,7 +40,7 @@ error=false
 echo "Checking Dependencies"
 
 if [[ $ver -lt 7 ]]; then
-    if [[ $# -eq 2 ]]; then
+    if [[ $twoconf = true ]]; then
         repoclosure -t -r $1 --config=$YUMCNF --config=$2 \
             -l base$ver-32 -l updates$ver-32 -l extras$ver-32 \
             -l base$ver -l updates$ver -l extras$ver > $TMPRPL
@@ -30,7 +50,7 @@ if [[ $ver -lt 7 ]]; then
             -l base$ver -l updates$ver -l extras$ver > $TMPRPL
     fi
 else
-    if [[ $# -eq 2 ]]; then
+    if [[ $twoconf = true ]]; then
         repoclosure -t -r $1 --config=$YUMCNF --config=$2 \
             -l base$ver -l updates$ver -l extras$ver > $TMPRPL
     else
@@ -45,9 +65,9 @@ sed -n '/unresolved\ deps/{:a;n;/package:\ /b;p;ba}' $TMPRPL \
 touch $RDPROB
 
 while read line; do
-    grep -q -i $line $DPIGN
+    grep -q -i "$line" $DPIGN
     if [[ "$?" != "0" ]]; then
-        echo "Missing dependency: $line" > $RDPROB
+        echo "Missing dependency: $line" >> $RDPROB
         error=true
     fi
 done < $URDEPS
@@ -58,12 +78,19 @@ if [ "$error" = true ]; then
     echo "\nOutput from repoclosure:"
     cat $TMPRPL
     echo -e ""
+    if [[ "$keep" = false ]]; then
+        rm $RDPROB
+        rm $TMPRPL
+        rm $URDEPS
+    fi
     exit 1
 fi
 
-rm $RDPROB
-rm $TMPRPL
-rm $URDEPS
+if [[ "$keep" = false ]]; then
+    rm $RDPROB
+    rm $TMPRPL
+    rm $URDEPS
+fi
 
 echo "No Dependency errors found"
 
