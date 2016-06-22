@@ -103,7 +103,7 @@ if __name__ == "__main__":
     parser.add_argument(
             "-c",
             "--config-file",
-            default="/etc/rutgers-repotools.cfg",
+            default="/etc/daily_checks.cfg",
             help="The configuration file to use.")
     parser.add_argument(
             "-v",
