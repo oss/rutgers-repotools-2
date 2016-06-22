@@ -19,7 +19,7 @@ if [[ ! -f "$MASHD$1.mash" ]]; then
 fi
 
 if [[ -f "$LOCK" ]]; then
-    echo "Operation on repository alreeady occurring, try again later"
+    echo "Operation on repository already occurring, try again later"
     exit 1
 fi
 
