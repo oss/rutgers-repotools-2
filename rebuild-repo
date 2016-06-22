@@ -71,7 +71,7 @@ fi
 echo "Mash successfully generated the repository"
 
 if [[ $nodep = false ]]; then
-    ./depcheck.sh $1 -k
+    depcheck $1 -k
 
     if [[ "$?" != "0" ]]; then
         echo "Exiting due to dependency errors..."
