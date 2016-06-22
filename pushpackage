@@ -41,7 +41,7 @@ if [[ "$?" != "0" ]]; then
 	koji untag-pkg $1 $2
     echo "Sending Mail"
     echo -e "Pushpackage failed with the following output:\n\nDependency Errors detected:\n$(cat $RDPROB)\n\nOutput from repoclosure:\n$(cat $TMPRPL)" | \
-        mailx -r "roji@koji.rutgers.edu" -s "CentOS Borken Dependencies" "anp120@jla.rutgers.edu"
+        mailx -r "roji@koji.rutgers.edu" -s "CentOS Borken Dependencies" "$EMAIL"
     rm $RDPROB
     rm $TMPRPL
     rm $URDEPS
@@ -55,7 +55,7 @@ if [[ $RPMDB = true  ]]; then
 fi
 
 echo -e "Pushpackage successfully pushed $2 to $1 along with its breakout packages" | \
-    mailx -r "roji@koji.rutgers.edu" -s "CentOS Push Successful - $2" "anp120@jla.rutgers.edu"
+    mailx -r "roji@koji.rutgers.edu" -s "CentOS Push Successful - $2" "$EMAIL"
 
 rm $RDPROB
 rm $TMPRPL
