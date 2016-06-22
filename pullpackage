@@ -35,7 +35,7 @@ if [[ "$?" != "0" ]]; then
 fi
 
 echo "Called rebuild-repo"
-rebuild-repo $1 -nolock
+rebuild-repo $1 -k -nolock
 if [[ "$?" != "0" ]]; then
 	echo "Rebuild-Repo failed!! Retagging package and exiting..."
 	koji tag-pkg $1 $2
