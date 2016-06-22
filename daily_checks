@@ -10,9 +10,8 @@ specify your own custom configuration file as a command line argument.
 
 Scripts run by this file:
     - repocheck
-    - depcheck (see depcheck.py)
+    - depcheck
     - koji_backup
-    - rpmdb_backup
 """
 
 import ConfigParser
