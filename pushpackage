@@ -51,7 +51,7 @@ fi
 
 if [[ $RPMDB = true  ]]; then
   echo "Adding new packages to rpmdb"
-  populate-rpmfind-db -v
+  populate-rpmfind-db
 fi
 
 echo -e "Pushpackage successfully pushed $2 to $1 along with its breakout packages" | \
