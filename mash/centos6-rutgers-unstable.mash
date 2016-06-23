@@ -17,3 +17,5 @@ delta = False
 hash_packages = False
 # This forces to also create older version of same package
 latest = True 
+# CentOS6 doesn't support xz by default, so compress with gz
+compress_type=gz
