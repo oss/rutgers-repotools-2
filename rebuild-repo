@@ -123,7 +123,7 @@ if [[ "$?" != "0" ]]; then
 	exit 1
 fi
 
-chmod 775 -R $ACTD
+chmod 775 $ACTD
 if [[ "$?" != "0" ]]; then
 	echo "FAILED TO CHMOD 775 ON $ACTD: PLEASE FIX MANUALLY"
     if [[ $nolock = false ]]; then
