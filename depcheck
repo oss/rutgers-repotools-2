@@ -56,7 +56,7 @@ else
     fi
 fi
 
-rm -r /var/tmp/yum-*
+rm -r /var/tmp/yum-${USER}-*
 
 echo "Checking Dependencies"
 
