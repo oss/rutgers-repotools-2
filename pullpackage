@@ -46,7 +46,7 @@ if [[ "$?" != "0" ]]; then
 	koji tag-pkg $1 $2
     echo "Sending Mail"
     echo -e "Pullpackage failed with the following output:\n\nDependency Errors detected:\n$(cat $RDPROB)\n\nOutput from repoclosure:\n$(cat $TMPRPL)" | \
-        mailx -r "roji@koji.rutgers.edu" -s "CentOS Borken Dependencies" "$EMAIL"
+        mailx -r "roji@koji.rutgers.edu" -s "CentOS Broken Dependencies" "$EMAIL"
     rm $RDPROB
     rm $TMPRPL
     rm $URDEPS
