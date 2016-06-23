@@ -113,6 +113,25 @@ if [[ "$?" != "0" ]]; then
 	exit 1
 fi
 
+echo "Setting corrent group and permissions"
+chown $USER:packagepushers $ACTD
+if [[ "$?" != "0" ]]; then
+	echo "FAILED TO SET NEW OWNER PERMISSIONS: PLEASE FIX MANUALLY"
+    if [[ $nolock = false ]]; then
+        rm $LOCK
+    fi
+	exit 1
+fi
+
+chmod 775 -R $ACTD
+if [[ "$?" != "0" ]]; then
+	echo "FAILED TO CHMOD 775 ON $ACTD: PLEASE FIX MANUALLY"
+    if [[ $nolock = false ]]; then
+        rm $LOCK
+    fi
+	exit 1
+fi
+
 if [[ $nolock = false ]]; then
     rm $LOCK
 fi
