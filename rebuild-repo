@@ -20,9 +20,14 @@ do
     fi
 done
 
-if [[ $EUID -ne 0 ]]; then
-	echo "This script must be run as root" 1>&2
+if [[ $EUID -eq 0 ]]; then
+	echo "Error: Do not run this script as root" 1>&2
 	exit 1
+fi
+
+if ! id -nG "$USER" | grep -qw "packagepushers"; then
+  echo "ERROR: $USER does not belong to packagepushers"
+  exit 1
 fi
 
 source /etc/rutgers-repotools-2.cfg
@@ -37,14 +42,13 @@ if [[ $nolock = false ]]; then
         echo "Operation on repository already occurring, try again later"
         exit 1
     fi
-
     touch $LOCK
 fi
 
 # From Koji Set-up Guide: Kojira may need to be restarted when new tags are
 # added in order to detect those tags correctly.
-echo "Restarting kojira"
-service kojira restart
+# echo "Restarting kojira"
+# service kojira restart
 
 if [[ -d "$TMPD" ]]; then
 	echo "Deleteing old temp repository"
