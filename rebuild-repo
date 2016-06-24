@@ -52,19 +52,19 @@ fi
 
 if [[ -d "$TMPD" ]]; then
 	echo "Deleteing old temp repository"
-	rm -r $TMPD
+	rm -rf $TMPD
 fi
 
 if [[ -d "$TGTD$1" ]]; then
 	echo "Deleteing bad repository"
-	rm -r $TGTD$1
+	rm -rf $TGTD$1
 fi
 
 echo "Commence the mashing!"
 
 mash -o $TGTD $1
 
-rm -r /var/tmp/mash
+rm -rf /var/tmp/mash
 
 if [[ "$?" != "0" ]]; then
 	echo "Mash failed to generate the repo"
