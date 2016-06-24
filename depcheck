@@ -56,8 +56,6 @@ else
     fi
 fi
 
-rm -r /var/tmp/yum-${USER}-*
-
 echo "Checking Dependencies"
 
 if [[ $ver -lt 7 ]]; then
@@ -79,6 +77,8 @@ else
             -l base$ver -l updates$ver -l extras$ver $extra_repos > $TMPRPL
     fi
 fi
+
+rm -r /var/tmp/yum-${USER}-*
 
 sed -n '/unresolved\ deps/{:a;n;/package:\ /b;p;ba}' $TMPRPL \
     > $URDEPS
