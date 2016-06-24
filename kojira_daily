@@ -1,4 +1,4 @@
 #!/bin/bash
 # From Koji Set-up Guide: Kojira may need to be restarted when new tags are
 # added in order to detect those tags correctly.
-service kojira restart
+service kojira restart > /dev/null 2>&1
