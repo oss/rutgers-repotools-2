@@ -115,7 +115,7 @@ if [[ "$?" != "0" ]]; then
 	exit 1
 fi
 
-echo "Setting corrent group and permissions"
+echo "Setting correct group and permissions"
 find $ACTD -type d -exec chown $USER:packagepushers {} +
 if [[ "$?" != "0" ]]; then
 	echo "FAILED TO SET NEW OWNER PERMISSIONS: PLEASE FIX MANUALLY"
