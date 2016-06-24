@@ -116,7 +116,7 @@ if [[ "$?" != "0" ]]; then
 fi
 
 echo "Setting corrent group and permissions"
-chown $USER:packagepushers $ACTD
+find $ACTD -type d -exec chown $USER:packagepushers {} +
 if [[ "$?" != "0" ]]; then
 	echo "FAILED TO SET NEW OWNER PERMISSIONS: PLEASE FIX MANUALLY"
     if [[ $nolock = false ]]; then
@@ -125,7 +125,7 @@ if [[ "$?" != "0" ]]; then
 	exit 1
 fi
 
-chmod 775 $ACTD
+find $ACTD -type d -exec chmod 775 {} +
 if [[ "$?" != "0" ]]; then
 	echo "FAILED TO CHMOD 775 ON $ACTD: PLEASE FIX MANUALLY"
     if [[ $nolock = false ]]; then
