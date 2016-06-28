@@ -81,12 +81,8 @@ job automatically uses information from the configuration file by default.
 
 Authors
 =======
-The dependency checking script depcheck.py is a heavily modified version of
-Fedora's spam-o-matic from the mash project. You can find them at
-http://pkgs.fedoraproject.org/cgit/mash.git/.
-
-The rest was written by Alexander Pavel and Derek Maciel of Rutgers University 
-Open System Solutions, or adapted from the original repotools suite.
+Written by Alexander Pavel of Rutgers University Open System Solutions to replace 
+the original repotools suite (originally written in python).
 
 License
 =======
