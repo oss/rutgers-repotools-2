@@ -35,7 +35,7 @@ for var in "$@"
 do
     # probably don't need an if to skip first arg, but too lazy to find another
     # way lol
-    if [[ $var == $1 ]]; then
+    if [[ $var != $1 ]]; then
         koji tag-pkg $1 $var
         if [[ "$?" != "0" ]]; then
 	        echo "Failed to tag package $var!"
@@ -54,7 +54,7 @@ if [[ "$?" != "0" ]]; then
     do
         # probably don't need an if to skip first arg, but too lazy to find another
         # way lol
-        if [[ $var == $1 ]]; then
+        if [[ $var != $1 ]]; then
             koji untag-pkg $1 $var
             if [[ "$?" != "0" ]]; then
 	            echo "Failed to untag package $var!"
@@ -81,7 +81,7 @@ for var in "$@"
 do
     # probably don't need an if to skip first arg, but too lazy to find another
     # way lol
-    if [[ $var == $1 ]]; then
+    if [[ $var != $1 ]]; then
         echo -e "Pushpackage successfully pushed $var to $1 along with its breakout packages" | \
             mailx -r "roji@koji.rutgers.edu" -s "CentOS Push Successful - $var" "$EMAIL"
         if [[ "$?" != "0" ]]; then
