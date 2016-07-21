@@ -31,13 +31,20 @@ fi
 touch $LOCK
 
 echo "Tagging packages"
-koji tag-pkg $1 $2
+for var in "$@"
+do
+    # probably don't need an if to skip first arg, but too lazy to find another
+    # way lol
+    if [[ $var -ne $1 ]]; then
+        koji tag-pkg $1 $2
+        if [[ "$?" != "0" ]]; then
+	        echo "Failed to tag package $var!"
+            rm $LOCK
+	        exit 1
+        fi
+    fi
+done
 
-if [[ "$?" != "0" ]]; then
-	echo "Failed to tag packages!"
-    rm $LOCK
-	exit 1
-fi
 
 echo "Called rebuild-repo"
 rebuild-repo $1 -nolock -k
@@ -59,8 +66,19 @@ if [[ $RPMDB = true  ]]; then
   populate-rpmfind-db
 fi
 
-echo -e "Pushpackage successfully pushed $2 to $1 along with its breakout packages" | \
-    mailx -r "roji@koji.rutgers.edu" -s "CentOS Push Successful - $2" "$EMAIL"
+echo "Sending email(s)"
+for var in "$@"
+do
+    # probably don't need an if to skip first arg, but too lazy to find another
+    # way lol
+    if [[ $var -ne $1 ]]; then
+        echo -e "Pushpackage successfully pushed $2 to $1 along with its breakout packages" | \
+            mailx -r "roji@koji.rutgers.edu" -s "CentOS Push Successful - $2" "$EMAIL"
+        if [[ "$?" != "0" ]]; then
+	        echo "Failed to send email for package $var"
+        fi
+    fi
+done
 
 rm $RDPROB
 rm $TMPRPL
