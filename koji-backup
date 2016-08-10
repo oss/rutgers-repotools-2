@@ -26,7 +26,7 @@ function error() {
 }
 
 # Switch to koji user
-su koji
+sudo -su koji
 
 # Check that temp directory is secure
 eval dirpath="/var/run/rutgers-repotools-2"
