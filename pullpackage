@@ -70,6 +70,13 @@ if [[ "$?" != "0" ]]; then
 	exit 1
 fi
 
+if [[ $RPMDB = true  ]]; then
+  echo "Trimming packages from rpmdb"
+  input=$2
+  ver=${input//[^0-9]/}
+  populate-rpmfind-db -d $ver
+fi
+
 echo "Sending email(s)"
 for var in "$@"
 do

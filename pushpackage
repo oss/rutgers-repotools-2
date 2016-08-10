@@ -73,7 +73,9 @@ fi
 
 if [[ $RPMDB = true  ]]; then
   echo "Adding new packages to rpmdb"
-  populate-rpmfind-db
+  input=$2
+  ver=${input//[^0-9]/}
+  populate-rpmfind-db -d $ver
 fi
 
 echo "Sending email(s)"
