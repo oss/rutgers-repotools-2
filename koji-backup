@@ -19,13 +19,32 @@ fi
 # Exit on error
 set -e
 
+# Output an error message and set the errors flag
+function error() {
+    echo "ERROR: $1"
+    errors=true
+}
+
+# Switch to koji user
+su koji
+
+# Check that temp directory is secure
+eval dirpath="/var/run/rutgers-repotools-2"
+if [ ! -d "$dirpath" ]; then
+    error "$dirvar path is invalid: \"$dirpath\" is not a directory"
+elif [ "drw-------" -ne "$(stat -c %A /var/run/rutgers-repotools-2)" ]; then
+    error "$dirpath does not have correct (600) permissions"
+elif [ "koji" -ne "$(stat -c %U /var/run/rutgers-repotools-2)" ]; then
+    error "$dirpath is not owned by koji"
+fi
+
 # Dump Koji DB to local disk
 echo "Dumping Koji database to disc..."
-sudo -u koji pg_dump -C koji > /tmp/koji_dbdump.sql
+sudo -u koji pg_dump -C koji > /var/run/rutgers-repotools-2/koji_dbdump.sql
 
 # Sync the backup to our backup location
 echo "Syncing to backup location..."
 rsync --archive --sparse --delete "$1" "$2/packages"
-rsync --archive /tmp/koji_dbdump.sql "$2"
-rm -f /tmp/koji_dbdump
+rsync --archive /var/run/rutgers-repotools-2/koji_dbdump.sql "$2"
+rm -f /var/run/rutgers-repotools-2/koji_dbdump.sql
 echo "Backup complete!"
