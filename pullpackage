@@ -71,8 +71,8 @@ if [[ "$?" != "0" ]]; then
 fi
 
 if [[ $RPMDB = true  ]]; then
-  echo "Trimming packages from rpmdb"
-  input=$2
+  echo "Updating rpmdb"
+  input=$1
   ver=${input//[^0-9]/}
   populate-rpmfind-db -d $ver
 fi
