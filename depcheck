@@ -96,7 +96,7 @@ done < $URDEPS
 if [ "$error" = true ]; then
     echo -e "\nDependency errors detected:"
     cat $RDPROB
-    echo "\nOutput from repoclosure:"
+    echo -e "\nOutput from repoclosure:"
     cat $TMPRPL
     echo -e ""
     if [[ "$keep" = false ]]; then

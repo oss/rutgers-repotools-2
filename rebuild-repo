@@ -51,7 +51,7 @@ fi
 # service kojira restart
 
 if [[ -d "$TMPD" ]]; then
-	echo "Deleteing old temp repository"
+	echo "Deleting old temp repository"
 	rm -rf $TMPD
 fi
 
