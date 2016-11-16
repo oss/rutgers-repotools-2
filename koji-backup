@@ -39,11 +39,11 @@ fi
 
 # Dump Koji DB to local disk
 echo "Dumping Koji database to disc..."
-sudo -u koji sh -c "pg_dump -C koji -U koji > /var/run/rutgers-repotools-2/koji_dbdump.sql"
+sudo -u koji sh -c "pg_dump -C koji -U koji | gzip > /var/run/rutgers-repotools-2/koji_dbdump.sql.gz"
 
 # Sync the backup to our backup location
 echo "Syncing to backup location..."
 rsync --archive --sparse --delete "$1" "$2/packages"
-rsync --archive /var/run/rutgers-repotools-2/koji_dbdump.sql "$2"
+rsync --archive /var/run/rutgers-repotools-2/koji_dbdump.sql.gz "$2"
 sudo -u koji sh -c "rm -f /var/run/rutgers-repotools-2/koji_dbdump.sql"
 echo "Backup complete!"
