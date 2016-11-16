@@ -30,7 +30,7 @@ if [ ! -d "$dirpath" ]; then
     error "$dirvar path is invalid: \"$dirpath\" is not a directory"
     exit 1
 elif [ "drwx------" != "$(stat -c %A /var/run/rutgers-repotools-2)" ]; then
-    error "$dirpath does not have correct (600) permissions"
+    error "$dirpath does not have correct (700) permissions"
     exit 1
 elif [ "koji" != "$(stat -c %U /var/run/rutgers-repotools-2)" ]; then
     error "$dirpath is not owned by koji"
