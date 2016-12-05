@@ -36,7 +36,7 @@ do
     # probably don't need an if to skip first arg, but too lazy to find another
     # way lol
     if [[ $var != $1 ]]; then
-        koji tag-pkg $1 $var
+        koji call tagBuildBypass $1 $var > /dev/null 2>&1
         if [[ "$?" != "0" ]]; then
 	        echo "Failed to tag package $var!"
             rm $LOCK
