@@ -56,7 +56,7 @@ if [[ -d "$TMPD" ]]; then
 fi
 
 if [[ -d "$TGTD$1" ]]; then
-	echo "Deleteing bad repository"
+	echo "Deleting bad repository"
 	rm -rf $TGTD$1
 fi
 
