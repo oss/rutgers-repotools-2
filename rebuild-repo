@@ -64,15 +64,16 @@ echo "Commence the mashing!"
 
 mash -o $TGTD $1
 
-rm -rf /var/tmp/mash
-
 if [[ "$?" != "0" ]]; then
 	echo "Mash failed to generate the repo"
-    if [[ $nolock = false ]]; then
-        rm $LOCK
-    fi
+	if [[ $nolock = false ]]; then
+            rm $LOCK
+	fi
+	rm -rf /var/tmp/mash
 	exit 1
 fi
+
+rm -rf /var/tmp/mash
 
 echo "Mash successfully generated the repository"
 
